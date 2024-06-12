@@ -26,9 +26,60 @@
             "say hello world",
             "say hello"
           ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "slots": [
+            {
+              "name": "status",
+              "type": "StatusTrack"
+            },
+            {
+              "name": "QueryContent",
+              "type": "ContentQuery"
+            }
+          ],
+          "name": "StatusUpdateContent",
+          "samples": [
+            "update my {QueryContent} to {status}"
+          ]
         }
       ],
-      "types": [],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "pausado"
+              }
+            },
+            {
+              "name": {
+                "value": "lido"
+              }
+            },
+            {
+              "name": {
+                "value": "lendo"
+              }
+            }
+          ],
+          "name": "StatusTrack"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "contentGeneric"
+              }
+            }
+          ],
+          "name": "ContentQuery"
+        }
+      ],
       "invocationName": "alexandria"
     }
   }
