@@ -14,7 +14,10 @@ const LaunchRequestHandler = {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token)
-        console.log("USERDATA:", userData)
+        // Salva o ID do usuário na sessão
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        sessionAttributes.userData = userData;
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Olá bem vindo a Alexandria! ${userData.username}`;
 
         return handlerInput.responseBuilder
@@ -30,10 +33,11 @@ const HelloWorldIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     async handle(handlerInput) {
-
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        const userId = sessionAttributes.userId || 'ID não encontrado.';
 
         return handlerInput.responseBuilder
-            .speak(speakOutput)
+            .speak(`Olá denovo ${userId.username}`)
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
