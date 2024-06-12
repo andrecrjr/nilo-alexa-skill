@@ -4,6 +4,7 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
+const { getUserAuto } = require('./request');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -25,8 +26,9 @@ const HelloWorldIntentHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
-    handle(handlerInput) {
-        const speakOutput = 'Hello World!';
+    async handle(handlerInput) {
+        const userData = await getUserAuth()
+        const speakOutput = `Hello World! ${userData.user}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
