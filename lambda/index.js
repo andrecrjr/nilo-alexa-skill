@@ -4,15 +4,17 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const { getUserAuto } = require('./request');
+const { getUserAuth } = require('./request');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
-    handle(handlerInput) {
-        console.log(handlerInput)
-        const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
+    async handle(handlerInput) {
+
+        const token = handlerInput.requestEnvelope.context.System.user.accessToken;
+        const userData = await getUserAuth(token)
+        const speakOutput = `Olá bem vindo a alexandria! ${userData.user}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -27,8 +29,7 @@ const HelloWorldIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     async handle(handlerInput) {
-        const userData = await getUserAuth()
-        const speakOutput = `Hello World! ${userData.user}`;
+
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
