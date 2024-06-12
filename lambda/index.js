@@ -15,7 +15,7 @@ const LaunchRequestHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token)
 
-        const speakOutput = `Olá bem vindo a alexandria! ${userData.user}`;
+        const speakOutput = `Olá bem vindo a alexandria! ${userData.username}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
