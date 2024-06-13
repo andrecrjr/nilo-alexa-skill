@@ -17,6 +17,7 @@ const getDynamicStatusSlotHistory = async () => {
             "Authorization": `Bearer ${accessToken}`
         }
     })
+    console.log("data contenttype", data)
     return new Array(...new Set(data).map(type => type.statusTracker.statusHistory).flat());
 }
 
