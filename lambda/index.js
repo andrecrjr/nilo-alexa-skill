@@ -36,10 +36,11 @@ const LaunchRequestHandler = {
     }
 };
 
-const StatusUpdateIntentHandler = {
+const StatusUpdateContentIntentHandler = {
+
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateIntent';
+        return (Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
     },
     async handle(handlerInput) {
 
@@ -184,7 +185,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
-        StatusUpdateIntentHandler,
+        StatusUpdateContentIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
