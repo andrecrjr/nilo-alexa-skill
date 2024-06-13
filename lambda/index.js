@@ -34,10 +34,10 @@ const HelloWorldIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        const userId = sessionAttributes.userId || 'ID não encontrado.';
+        const userData = sessionAttributes.userData || 'ID não encontrado.';
 
         return handlerInput.responseBuilder
-            .speak(`Olá denovo ${userId.username}`)
+            .speak(`Olá denovo ${userData.username}`)
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
