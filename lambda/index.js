@@ -15,9 +15,10 @@ const LaunchRequestHandler = {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
+        console.log("user data", userData)
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
         console.log("slots", newSlotsFromService);
-        const dynamicEntities = updateDynamicEntities(newSlotsFromService)
+        const dynamicEntities = updateDynamicEntities(Array(...new Set(newSlotsFromService).map(type => type.statusTracker.statusHistory).flat()))
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = userData;
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);

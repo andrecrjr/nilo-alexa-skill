@@ -12,13 +12,17 @@ const getUserAuth = async (accessToken) => {
 }
 
 const getDynamicStatusSlotHistory = async () => {
-    const { data } = await apiBase.get("/contenttype", {
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        }
-    })
-    console.log("data contenttype", data)
-    return new Array(...new Set(data).map(type => type.statusTracker.statusHistory).flat());
+    try {
+        const { data } = await apiBase.get("/contenttype", {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+        console.log("data contenttype", data)
+        return data
+    } catch (error) {
+        console.log("error", error)
+    }
 }
 
 module.exports = {
