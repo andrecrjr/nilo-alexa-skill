@@ -18,9 +18,11 @@ const LaunchRequestHandler = {
         console.log("user data", userData)
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
         console.log("slots", newSlotsFromService);
+
         const dynamicEntities = updateDynamicEntities(Array(...new Set(newSlotsFromService).map(type => type.statusTracker.statusHistory).flat()))
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = userData;
+
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
         I'm here to assist you in keeping track of your books and manga and other contents. What would you like to update today?`;
