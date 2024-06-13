@@ -44,13 +44,20 @@ const StatusUpdateContentIntentHandler = {
     },
     async handle(handlerInput) {
 
-        const statusSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
+        const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
+
+        /*
+
+         const {id} = await get /collection/search?q=queryContentSlot (token)
+         const data = await  PATCH /collection/page {id, currentStatusTrack:status} (token)
+        */
+
         console.log('status', statusSlot)
         console.log('queryContentSlot', queryContentSlot)
         // Your logic to handle the update goes here
 
-        const speechText = `Your love ${statusSlot} is mine ${queryContentSlot}.`;
+        const speechText = `Your content ${queryContentSlot} has ${currentStatusTrack}.`;
 
         return handlerInput.responseBuilder
             .speak(`${speechText}`)
