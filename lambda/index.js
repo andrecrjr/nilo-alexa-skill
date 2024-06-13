@@ -4,7 +4,8 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const { getUserAuth } = require('./request');
+const { getUserAuth, getDynamicStatusSlotHistory } = require('./request');
+const { updateDynamicEntities } = require('./utils');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -13,19 +14,43 @@ const LaunchRequestHandler = {
     async handle(handlerInput) {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
-        const userData = await getUserAuth(token)
-        // Salva o ID do usuário na sessão
+        const userData = await getUserAuth(token);
+        const newSlotsFromService = await getDynamicStatusSlotHistory(token);
+        console.log("slots", newSlotsFromService);
+        const dynamicEntities = updateDynamicEntities(newSlotsFromService)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = userData;
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-        const speakOutput = `Olá bem vindo a Alexandria! ${userData.username}`;
+        const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
+        I'm here to assist you in keeping track of your books and manga and other contents. What would you like to update today?`;
+        const speakReprompt = `For example, you can say "Update the title of the book to page 45", or "Mark chapter 3 of the manga as read".`
 
-        return handlerInput.responseBuilder
+        return handlerInput.responseBuilder.addDirective(dynamicEntities)
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(speakReprompt)
             .getResponse();
     }
 };
+
+const StatusUpdateIntentHandler = {
+    canHandle() {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateIntent';
+    },
+    async handle(handlerInput) {
+
+        const statusSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
+        const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
+
+        // Your logic to handle the update goes here
+
+        const speechText = `Your ${queryContentSlot} status has been updated to ${statusSlot}.`;
+
+        return handlerInput.responseBuilder
+            .speak(`${speechText}`)
+            .getResponse();
+    }
+}
 
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
@@ -154,6 +179,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
+        StatusUpdateIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
