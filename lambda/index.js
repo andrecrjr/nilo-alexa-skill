@@ -43,13 +43,13 @@ const StatusUpdateIntentHandler = {
     },
     async handle(handlerInput) {
 
-        const statusSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
-        const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
+        const statusSlot = Alexa.getSlotValueV2(handlerInput.requestEnvelope, 'status');
+        const queryContentSlot = Alexa.getSlotValueV2(handlerInput.requestEnvelope, 'QueryContent');
         console.log('status', statusSlot)
         console.log('queryContentSlot', queryContentSlot)
         // Your logic to handle the update goes here
 
-        const speechText = `Your ${queryContentSlot} status has been updated to ${statusSlot}.`;
+        const speechText = `Your love is mine.`;
 
         return handlerInput.responseBuilder
             .speak(`${speechText}`)
