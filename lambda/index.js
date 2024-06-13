@@ -4,7 +4,7 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const { getUserAuth, getDynamicStatusSlotHistory } = require('./request');
+const { getUserAuth, getDynamicStatusSlotHistory, getSearchContentInUserCollection, updateTrackingStatus } = require('./request');
 const { updateDynamicEntities } = require('./utils');
 
 const LaunchRequestHandler = {
@@ -15,11 +15,7 @@ const LaunchRequestHandler = {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
-        console.log("user data", userData)
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
-        console.log("slots 1", newSlotsFromService)
-        console.log("slots", newSlotsFromService.map(type => type.statusTracker.statusHistory).flat());
-
         const dynamicEntities = updateDynamicEntities(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = userData;
@@ -43,24 +39,46 @@ const StatusUpdateContentIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
     },
     async handle(handlerInput) {
-
+        const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
+        // Implement logic to search for content using queryContentSlot
+        const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);  // Replace with your search function
+        console.log("ID E STATUS USER", currentStatusTrack, queryContentSlot)
+        console.log("ID E STATUS USER", id, statusUser)
+        if (!id) {
+            // Content not found
+            const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .getResponse();
+        }
 
-        /*
+        if (statusUser === currentStatusTrack) {
+            // Content found with existing status, inform user and offer to try again
+            const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
+            Would you like to try updating it again?`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .reprompt(speechText)
+                .getResponse();
+        }
 
-         const {id} = await get /collection/search?q=queryContentSlot (token)
-         const data = await  PATCH /collection/page {id, currentStatusTrack:status} (token)
-        */
+        // Update content status
+        const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);
 
-        console.log('status', statusSlot)
-        console.log('queryContentSlot', queryContentSlot)
-        // Your logic to handle the update goes here
+        if (!updateResult) {
+            // Update failed
+            const speechText = `There was a problem updating the status of your content. Please try again later.`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .getResponse();
+        }
 
-        const speechText = `Your content ${queryContentSlot} has ${currentStatusTrack}.`;
-
+        // Update successful
+        const speechText = `Your content "${queryContentSlot}" has been successfully updated to the status "${currentStatusTrack}".`;
         return handlerInput.responseBuilder
-            .speak(`${speechText}`)
+            .speak(speechText)
             .getResponse();
     }
 }
