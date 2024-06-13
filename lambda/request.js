@@ -18,7 +18,6 @@ const getDynamicStatusSlotHistory = async (accessToken) => {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        console.log("data contenttype", data)
         return data
     } catch (error) {
         console.log("error", error)

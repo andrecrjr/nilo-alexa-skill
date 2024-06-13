@@ -17,7 +17,7 @@ const LaunchRequestHandler = {
         const userData = await getUserAuth(token);
         console.log("user data", userData)
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
-        console.log("slots", newSlotsFromService);
+        console.log("slots", Array(...new Set(newSlotsFromService).map(type => type.statusTracker.statusHistory).flat()));
 
         const dynamicEntities = updateDynamicEntities(Array(...new Set(newSlotsFromService).map(type => type.statusTracker.statusHistory).flat()))
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
