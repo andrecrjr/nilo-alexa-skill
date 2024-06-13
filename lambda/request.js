@@ -11,7 +11,7 @@ const getUserAuth = async (accessToken) => {
     return data;
 }
 
-const getDynamicStatusSlotHistory = async () => {
+const getDynamicStatusSlotHistory = async (accessToken) => {
     try {
         const { data } = await apiBase.get("/contenttype", {
             headers: {
