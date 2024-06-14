@@ -45,8 +45,8 @@ const StatusUpdateContentIntentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
-        const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);
-
+        const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot)[0];
+        console.log("ID, STATUS", id, statusUser)
         if (!id) {
             // Content not found
             const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
