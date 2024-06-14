@@ -112,8 +112,8 @@ const ChooseContentHandler = {
         console.log("index", index)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const searchData = sessionAttributes.searchData
-        console.log("lenght", searchData.length)
-        if (index >= 0 && index < searchData.length) {
+        console.log("lenght", searchData.data.length)
+        if (index >= 0 && index < searchData.data.length) {
             const chosenItem = searchData.data[index];
             console.log("chosen item", chosenItem)
             await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
