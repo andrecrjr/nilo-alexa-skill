@@ -52,7 +52,7 @@ const StatusUpdateContentIntentHandler = {
             data.forEach((item, index) => {
                 speechText += ` Content ${index + 1}: ${item.content.title} with status ${item.currentStatusTrack}. `;
             });
-            sessionAttributes.dataSearch = { data, currentStatusTrack };
+            sessionAttributes.searchData = { data, currentStatusTrack, mode: "Updating" };
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
             speechText += "Which content you would like to update it? Tell me like 'Number 2'";
 
@@ -111,12 +111,13 @@ const ChooseContentHandler = {
         const index = parseInt(itemNumber, 10) - 1; // Convert to zero-based index
         console.log("index", index)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        console.log("lenght", sessionAttributes.searchData.length)
-        if (index >= 0 && index < sessionAttributes.searchData.length + 1) {
-            const chosenItem = sessionAttributes.searchData.data[index];
+        const searchData = sessionAttributes.searchData
+        console.log("lenght", searchData.length)
+        if (index >= 0 && index < searchData.length) {
+            const chosenItem = searchData.data[index];
             console.log("chosen item", chosenItem)
             await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
-            const speechText = `Updating the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
+            const speechText = `${searchData.mode} the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
