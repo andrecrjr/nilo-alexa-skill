@@ -46,6 +46,23 @@
           "samples": [
             "update my {QueryContent} to {status}"
           ]
+        },
+        {
+          "slots": [
+            {
+              "name": "ItemNumber",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "name": "ChooseContentIntent",
+          "samples": [
+            "Search {ItemNumber}",
+            "Search number {ItemNumber}",
+            "Content {ItemNumber}",
+            "Number content {ItemNumber}",
+            "Content number {ItemNumber}",
+            "Number {ItemNumber}"
+          ]
         }
       ],
       "types": [
