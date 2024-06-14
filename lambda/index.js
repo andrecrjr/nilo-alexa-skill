@@ -48,20 +48,21 @@ const StatusUpdateContentIntentHandler = {
         if (data.length > 1) {
             const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
             // Peça ao usuário para escolher entre os itens encontrados
-            let speechText = `Found ${data.length} itens for "${queryContentSlot}". `;
+            let speechText = `Found ${data.length} itens for "${queryContentSlot}" then tell me which number you will choose:`;
             data.forEach((item, index) => {
                 speechText += `Content ${index + 1}: ${item.content.title} with status ${item.content.currentStatusTrack}. `;
             });
             sessionAttributes.dataSearch = { data, currentStatusTrack };
-            speechText += "Which content you would like to update it? Tell me the content number";
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+            speechText += "Which content you would like to update it? Tell me like 'Number 2'";
 
             return handlerInput.responseBuilder
                 .speak(speechText)
-                .reprompt(`Please say me 'Update content 5' or 'Update 5'`)
+                .reprompt(`Please say for example: 'Number 4'`)
                 .getResponse();
 
         }
+
         if (!id) {
             // Content not found
             const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
