@@ -16,11 +16,9 @@ const LaunchRequestHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
-        const newUserCollectionFromService = await getSearchContentInUserCollection(token, "")
         const dynamicStatusTracker = updateDynamicEntitiesStatusTrack(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
-
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        sessionAttributes.userData = { ...userData, ...{ collections: newUserCollectionFromService.map(item => ({ id: item.content.id, name: item.content.title })) } };
+        sessionAttributes.userData = { ...userData };
 
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
@@ -41,13 +39,29 @@ const StatusUpdateContentIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
     },
     async handle(handlerInput) {
-        // const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
         const data = await getSearchContentInUserCollection(token, queryContentSlot);
         const { id, currentStatusTrack: statusUser } = data[0]?.content;
-        console.log("ID, STATUS", id, statusUser)
+        if (data.length > 1) {
+            const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+            // Peça ao usuário para escolher entre os itens encontrados
+            let speechText = `Found ${data.length} itens for "${queryContentSlot}". `;
+            data.forEach((item, index) => {
+                speechText += `Content ${index + 1}: ${item.content.title} with status ${item.content.currentStatusTrack}. `;
+            });
+            sessionAttributes.dataSearch = { data, currentStatusTrack };
+            speechText += "Which content you would like to update it? Tell me the content number";
+            handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .reprompt(`Please say me 'Update content 5' or 'Update 5'`)
+                .getResponse();
+
+        }
         if (!id) {
             // Content not found
             const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
@@ -84,6 +98,38 @@ const StatusUpdateContentIntentHandler = {
             .getResponse();
     }
 }
+
+const ChooseContentHandler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest' &&
+            request.intent.name === 'ChooseContentIntent'; // Replace with the name of your intent
+    },
+    handle(handlerInput) {
+        const itemNumber = Alexa.getSlotValue(handlerInput.requestEnvelope, 'ItemNumber');
+        const index = parseInt(itemNumber, 10) - 1; // Convert to zero-based index
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        // Check if the index is within range
+        if (index >= 0 && index < data.length) {
+            const searchData = sessionAttributes.searchData
+            // Proceed with the update using the index
+            const chosenItem = searchData.data[index];
+            // ... (code to update the status of the chosen item)
+            const speechText = `Updating the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .getResponse();
+        } else {
+            // Respond with an error if the index is invalid
+            const speechText = `Sorry, I couldn't find an item with that number. Please try again.`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .reprompt('Please tell me the number of the item you would like to update.')
+                .getResponse();
+        }
+    }
+};
+
 
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
@@ -212,6 +258,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
+        ChooseContentHandler,
         StatusUpdateContentIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
