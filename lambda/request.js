@@ -24,16 +24,17 @@ const getDynamicStatusSlotHistory = async (accessToken) => {
     }
 }
 
-const getSearchContentInUserCollection = async (accessToken, query) => {
+const getSearchContentInUserCollection = async (accessToken, query = "") => {
     try {
         const { data } = await apiBase.get(`/collection/search?q=${query}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        return data ? data[0] : null
+        return data ? data : null
     } catch (error) {
         console.log("error", error)
+        throw new Error("Problem to find content")
     }
 }
 
@@ -41,7 +42,7 @@ const getSearchContentInUserCollection = async (accessToken, query) => {
 const updateTrackingStatus = async (accessToken, id, status) => {
     try {
         const updateResponse = await apiBase.patch(`/collection/page`, {
-            id,
+            contentId: id,
             currentStatusTrack: status
         }, {
             headers: {

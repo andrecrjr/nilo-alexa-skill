@@ -5,7 +5,7 @@
  * */
 const Alexa = require('ask-sdk-core');
 const { getUserAuth, getDynamicStatusSlotHistory, getSearchContentInUserCollection, updateTrackingStatus } = require('./request');
-const { updateDynamicEntities } = require('./utils');
+const { updateDynamicEntities, updateUserContentQuery, updateDynamicEntitiesStatusTrack, updateDynamicEntityUserContentQuery } = require('./utils');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -16,16 +16,18 @@ const LaunchRequestHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
-        const dynamicEntities = updateDynamicEntities(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        sessionAttributes.userData = userData;
+        const newUserCollectionFromService = await getSearchContentInUserCollection(token, "")
+        const dynamicStatusTracker = updateDynamicEntitiesStatusTrack(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
+        const dynamicCollectionUser = updateDynamicEntityUserContentQuery(newUserCollectionFromService.map(item => ({ id: item.content.id, name: item.content.title })))
 
-        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+        // const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        // sessionAttributes.userData = userData;
+        // handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
         I'm here to assist you in keeping track of your books and manga and other contents. What would you like to update today?`;
         const speakReprompt = `For example, you can say "Update the title of the book to page 45", or "Mark chapter 3 of the manga as read".`
 
-        return handlerInput.responseBuilder.addDirective(dynamicEntities)
+        return handlerInput.responseBuilder.addDirective(dynamicStatusTracker).addDirective(dynamicCollectionUser)
             .speak(speakOutput)
             .reprompt(speakReprompt)
             .getResponse();

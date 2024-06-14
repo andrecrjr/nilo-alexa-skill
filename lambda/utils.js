@@ -1,4 +1,4 @@
-const updateDynamicEntities = (statusHistory) => {
+const updateDynamicEntitiesStatusTrack = (statusHistory) => {
     return {
         type: 'Dialog.UpdateDynamicEntities',
         updateBehavior: 'REPLACE',
@@ -17,6 +17,26 @@ const updateDynamicEntities = (statusHistory) => {
     };
 };
 
+const updateDynamicEntityUserContentQuery = (userContents) => {
+    return {
+        type: 'Dialog.UpdateDynamicEntities',
+        updateBehavior: 'REPLACE',
+        types: [
+            {
+                name: 'ContentQuery',
+                values: userContents.map(content => ({
+                    id: content.id,
+                    name: {
+                        value: content.name,
+                        synonyms: []
+                    }
+                }))
+            }
+        ]
+    };
+};
+
 module.exports = {
-    updateDynamicEntities
+    updateDynamicEntitiesStatusTrack,
+    updateDynamicEntityUserContentQuery
 }
