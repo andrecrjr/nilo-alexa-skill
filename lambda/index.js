@@ -45,9 +45,7 @@ const StatusUpdateContentIntentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
-        const id = sessionAttributes.userData.collections.filter(item => item.name.includes(wordToNumber(queryContentSlot)))[0];
-        // const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);
-        console.log("ID E STATUS USER", currentStatusTrack, queryContentSlot, id)
+        const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);
 
         if (!id) {
             // Content not found
@@ -57,15 +55,15 @@ const StatusUpdateContentIntentHandler = {
                 .getResponse();
         }
 
-        // if (statusUser === currentStatusTrack) {
-        //     // Content found with existing status, inform user and offer to try again
-        //     const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
-        //     Would you like to try updating it again?`;
-        //     return handlerInput.responseBuilder
-        //         .speak(speechText)
-        //         .reprompt(speechText)
-        //         .getResponse();
-        // }
+        if (statusUser === currentStatusTrack) {
+            // Content found with existing status, inform user and offer to try again
+            const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
+            Would you like to try updating it again?`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .reprompt(speechText)
+                .getResponse();
+        }
 
         // Update content status
         const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);
