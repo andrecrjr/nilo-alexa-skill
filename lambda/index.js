@@ -116,7 +116,9 @@ const ChooseContentHandler = {
         if (index >= 0 && index < searchData.data.length) {
             const chosenItem = searchData.data[index];
             console.log("chosen item", chosenItem)
-            await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
+            console.log("chosen item", chosenItem.content)
+            const updatedData = await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
+            console.log("updated", updatedData)
             const speechText = `${searchData.mode} the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
             return handlerInput.responseBuilder
                 .speak(speechText)
