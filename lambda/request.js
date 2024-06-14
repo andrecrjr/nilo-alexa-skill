@@ -31,7 +31,8 @@ const getSearchContentInUserCollection = async (accessToken, query = "") => {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        return data ? data : null
+        console.log("request get", data)
+        return data
     } catch (error) {
         console.log("error", error)
         throw new Error("Problem to find content")
