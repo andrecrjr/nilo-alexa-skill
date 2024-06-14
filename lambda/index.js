@@ -18,16 +18,16 @@ const LaunchRequestHandler = {
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
         const newUserCollectionFromService = await getSearchContentInUserCollection(token, "")
         const dynamicStatusTracker = updateDynamicEntitiesStatusTrack(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
-        const dynamicCollectionUser = updateDynamicEntityUserContentQuery(newUserCollectionFromService.map(item => ({ id: item.content.id, name: item.content.title })))
 
-        // const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        // sessionAttributes.userData = userData;
-        // handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        sessionAttributes.userData = { ...userData, ...{ collections: newUserCollectionFromService.map(item => ({ id: item.content.id, name: item.content.title })) } };
+
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
         I'm here to assist you in keeping track of your books and manga and other contents. What would you like to update today?`;
         const speakReprompt = `For example, you can say "Update the title of the book to page 45", or "Mark chapter 3 of the manga as read".`
 
-        return handlerInput.responseBuilder.addDirective(dynamicStatusTracker).addDirective(dynamicCollectionUser)
+        return handlerInput.responseBuilder.addDirective(dynamicStatusTracker)
             .speak(speakOutput)
             .reprompt(speakReprompt)
             .getResponse();
@@ -41,13 +41,14 @@ const StatusUpdateContentIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
     },
     async handle(handlerInput) {
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
+        const id = sessionAttributes.userData.collections.filter(item => item.name.includes(wordToNumber(queryContentSlot)))[0];
+        // const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);
+        console.log("ID E STATUS USER", currentStatusTrack, queryContentSlot, id)
 
-        const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);  // Replace with your search function
-        console.log("ID E STATUS USER", currentStatusTrack, queryContentSlot)
-        console.log("ID E STATUS USER", id, statusUser)
         if (!id) {
             // Content not found
             const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
@@ -56,15 +57,15 @@ const StatusUpdateContentIntentHandler = {
                 .getResponse();
         }
 
-        if (statusUser === currentStatusTrack) {
-            // Content found with existing status, inform user and offer to try again
-            const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
-            Would you like to try updating it again?`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .reprompt(speechText)
-                .getResponse();
-        }
+        // if (statusUser === currentStatusTrack) {
+        //     // Content found with existing status, inform user and offer to try again
+        //     const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
+        //     Would you like to try updating it again?`;
+        //     return handlerInput.responseBuilder
+        //         .speak(speechText)
+        //         .reprompt(speechText)
+        //         .getResponse();
+        // }
 
         // Update content status
         const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);

@@ -28,7 +28,7 @@ const updateDynamicEntityUserContentQuery = (userContents) => {
                     id: content.id,
                     name: {
                         value: content.name,
-                        synonyms: [wordToNumber(content.name)]
+                        synonyms: []
                     }
                 }))
             }
@@ -76,5 +76,6 @@ function wordToNumber(text) {
 
 module.exports = {
     updateDynamicEntitiesStatusTrack,
-    updateDynamicEntityUserContentQuery
+    updateDynamicEntityUserContentQuery,
+    wordToNumber
 }
