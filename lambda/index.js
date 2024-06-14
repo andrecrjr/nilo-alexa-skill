@@ -44,10 +44,16 @@ const StatusUpdateContentIntentHandler = {
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
         const data = await getSearchContentInUserCollection(token, queryContentSlot);
-        const { id, currentStatusTrack: statusUser } = data[0]?.content;
+
+        if (data.length === 0) {
+            return handlerInput.responseBuilder
+                .speak(`Sorry, I couldn't find a content called ${queryContentSlot}. Please try again.`)
+                .reprompt(`Please try to add or update another content!`)
+                .getResponse();
+        }
+
         if (data.length > 1) {
             const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-            // Peça ao usuário para escolher entre os itens encontrados
             let speechText = `Found ${data.length} itens for "${queryContentSlot}" then tell me which number you will choose: `;
             data.forEach((item, index) => {
                 speechText += ` Content ${index + 1}: ${item.content.title} with status ${item.currentStatusTrack}. `;
@@ -60,8 +66,9 @@ const StatusUpdateContentIntentHandler = {
                 .speak(speechText)
                 .reprompt(`Please say for example: 'Number 4'`)
                 .getResponse();
-
         }
+
+        const { id, currentStatusTrack: statusUser } = data[0]?.content;
 
         if (!id) {
             // Content not found
@@ -110,13 +117,11 @@ const ChooseContentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const itemNumber = Alexa.getSlotValue(handlerInput.requestEnvelope, 'ItemNumber');
         const index = parseInt(itemNumber, 10) - 1; // Convert to zero-based index
-        console.log("index", index)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const searchData = sessionAttributes.searchData
         if (index >= 0 && index < searchData.data.length) {
             const chosenItem = searchData.data[index];
-            const updatedData = await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
-            console.log("updated", updatedData)
+            await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
             const speechText = `${searchData.mode} the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
             return handlerInput.responseBuilder
                 .speak(speechText)

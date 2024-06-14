@@ -31,7 +31,6 @@ const getSearchContentInUserCollection = async (accessToken, query = "") => {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        console.log("request get", data)
         return data
     } catch (error) {
         console.log("error", error)
@@ -50,7 +49,6 @@ const updateTrackingStatus = async (accessToken, id, status) => {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        console.log("conteudo atualizado", updateResponse.data)
         const data = updateResponse.data; // Assumindo que a resposta contém um objeto 'data' com as informações atualizadas
         return data; // Retornamos os dados atualizados
     } catch (error) {
