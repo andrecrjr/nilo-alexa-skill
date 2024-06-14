@@ -107,16 +107,14 @@ const ChooseContentHandler = {
             request.intent.name === 'ChooseContentIntent'; // Replace with the name of your intent
     },
     async handle(handlerInput) {
+        const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const itemNumber = Alexa.getSlotValue(handlerInput.requestEnvelope, 'ItemNumber');
         const index = parseInt(itemNumber, 10) - 1; // Convert to zero-based index
         console.log("index", index)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const searchData = sessionAttributes.searchData
-        console.log("lenght", searchData.data.length)
         if (index >= 0 && index < searchData.data.length) {
             const chosenItem = searchData.data[index];
-            console.log("chosen item", chosenItem)
-            console.log("chosen item", chosenItem.content)
             const updatedData = await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
             console.log("updated", updatedData)
             const speechText = `${searchData.mode} the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
