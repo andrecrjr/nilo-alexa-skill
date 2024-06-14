@@ -40,27 +40,14 @@
             {
               "name": "QueryContent",
               "type": "ContentQuery"
-            },
-            {
-              "name": "numberEpisodeOrPages",
-              "type": "AMAZON.NUMBER"
             }
           ],
           "name": "StatusUpdateContent",
           "samples": [
-            "Alexandria I {status} {QueryContent}",
-            "Alexandria I\u0027m {status} {QueryContent}",
-            "Alexandria I {status} {numberEpisodeOrPages} of {QueryContent}",
-            "Alexandria I\u0027m {status} episode {numberEpisodeOrPages} of {QueryContent} ",
-            "Alexandria I am {status} episode {numberEpisodeOrPages} of {QueryContent} ",
-            "i {status} episode {numberEpisodeOrPages} of {QueryContent}",
-            "i\u0027m {status} episode {numberEpisodeOrPages} of {QueryContent}",
-            "i {status} {numberEpisodeOrPages} of {QueryContent}",
             "i {status} {QueryContent}",
             "i\u0027m {status} {QueryContent} ",
             "update {QueryContent} {status}",
-            "update  {QueryContent} to {status}",
-            "update my {QueryContent} to {status}"
+            "update {QueryContent} to {status}"
           ]
         },
         {
@@ -113,7 +100,7 @@
           "name": "ContentQuery"
         }
       ],
-      "invocationName": "alexandria"
+      "invocationName": "xandria"
     }
   }
 }
