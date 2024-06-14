@@ -44,7 +44,7 @@ const StatusUpdateContentIntentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
-        // Implement logic to search for content using queryContentSlot
+
         const { id, currentStatusTrack: statusUser } = await getSearchContentInUserCollection(token, queryContentSlot);  // Replace with your search function
         console.log("ID E STATUS USER", currentStatusTrack, queryContentSlot)
         console.log("ID E STATUS USER", id, statusUser)
