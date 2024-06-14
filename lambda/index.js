@@ -41,7 +41,7 @@ const StatusUpdateContentIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
     },
     async handle(handlerInput) {
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        // const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
