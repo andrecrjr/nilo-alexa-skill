@@ -48,9 +48,9 @@ const StatusUpdateContentIntentHandler = {
         if (data.length > 1) {
             const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
             // Peça ao usuário para escolher entre os itens encontrados
-            let speechText = `Found ${data.length} itens for "${queryContentSlot}" then tell me which number you will choose:`;
+            let speechText = `Found ${data.length} itens for "${queryContentSlot}" then tell me which number you will choose: `;
             data.forEach((item, index) => {
-                speechText += `Content ${index + 1}: ${item.content.title} with status ${item.content.currentStatusTrack}. `;
+                speechText += ` Content ${index + 1}: ${item.content.title} with status ${item.currentStatusTrack}. `;
             });
             sessionAttributes.dataSearch = { data, currentStatusTrack };
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
@@ -109,12 +109,12 @@ const ChooseContentHandler = {
     handle(handlerInput) {
         const itemNumber = Alexa.getSlotValue(handlerInput.requestEnvelope, 'ItemNumber');
         const index = parseInt(itemNumber, 10) - 1; // Convert to zero-based index
+        console.log("index", index)
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         // Check if the index is within range
-        if (index >= 0 && index < data.length) {
-            const searchData = sessionAttributes.searchData
-            // Proceed with the update using the index
-            const chosenItem = searchData.data[index];
+        if (index >= 0 && index < data.length + 1) {
+            const chosenItem = sessionAttributes.searchData.data[index];
+            console.log("chosen item", chosenItem)
             // ... (code to update the status of the chosen item)
             const speechText = `Updating the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
             return handlerInput.responseBuilder
@@ -125,7 +125,6 @@ const ChooseContentHandler = {
             const speechText = `Sorry, I couldn't find an item with that number. Please try again.`;
             return handlerInput.responseBuilder
                 .speak(speechText)
-                .reprompt('Please tell me the number of the item you would like to update.')
                 .getResponse();
         }
     }
