@@ -26,12 +26,29 @@
         }
       }
     },
+    "privacyAndCompliance": {
+      "locales": {
+        "en-US": {}
+      },
+      "shoppingKit": {
+        "isAmazonAssociatesOnAlexaEnabled": false,
+        "isShoppingActionsEnabled": false
+      }
+    },
     "publishingInformation": {
+      "automaticDistribution": {
+        "isActive": false
+      },
+      "distributionCountries": [],
+      "isAvailableWorldwide": true,
       "locales": {
         "en-US": {
-          "name": "alexandria"
+          "examplePhrases": [],
+          "keywords": [],
+          "name": "Nilo"
         }
-      }
+      },
+      "testingInstructions": "{\"ask_dist_username\":\"\",\"ask_dist_password\":\"\"}"
     }
   }
 }
