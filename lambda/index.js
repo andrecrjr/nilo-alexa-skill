@@ -6,6 +6,7 @@
 const Alexa = require('ask-sdk-core');
 const { getUserAuth, getDynamicStatusSlotHistory, getSearchContentInUserCollection, updateTrackingStatus } = require('./request');
 const { updateDynamicEntities, updateUserContentQuery, updateDynamicEntitiesStatusTrack, updateDynamicEntityUserContentQuery } = require('./utils');
+const { StatusUpdateContentIntentHandler } = require('./updateIntents/statusUpdateContent');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -32,87 +33,6 @@ const LaunchRequestHandler = {
     }
 };
 
-const StatusUpdateContentIntentHandler = {
-
-    canHandle(handlerInput) {
-        return (Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StatusUpdateContent');
-    },
-    async handle(handlerInput) {
-
-        const token = handlerInput.requestEnvelope.context.System.user.accessToken;
-        const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
-        const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
-
-        if (!currentStatusTrack || !queryContentSlot) {
-            return handlerInput.responseBuilder
-                .speak(`Sorry, I didn't understand what you said. Please try again.`)
-                .reprompt(`Please, try to add or update some content!`)
-                .getResponse();
-        }
-        const data = await getSearchContentInUserCollection(token, queryContentSlot, currentStatusTrack);
-
-        if (data.length === 0) {
-            return handlerInput.responseBuilder
-                .speak(`Sorry, I couldn't find a content called ${queryContentSlot}. Please try again.`)
-                .reprompt(`Please try to add or update another content!`)
-                .getResponse();
-        }
-
-        if (data.length > 1) {
-            const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-            let speechText = `Found ${data.length} itens for "${queryContentSlot}" then tell me which number you will choose: `;
-            data.forEach((item, index) => {
-                speechText += ` Content ${index + 1}: ${item.content.title} with status ${item.currentStatusTrack}. `;
-            });
-            sessionAttributes.searchData = { data, currentStatusTrack, mode: "Updating" };
-            handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-            speechText += "Which content you would like to update it? Tell me like 'Number 2'";
-
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .reprompt(`Please say for example: 'Number 4'`)
-                .getResponse();
-        }
-
-        const { id, currentStatusTrack: statusUser } = data[0]?.content;
-
-        if (!id) {
-            // Content not found
-            const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .getResponse();
-        }
-
-        if (statusUser === currentStatusTrack) {
-            // Content found with existing status, inform user and offer to try again
-            const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
-            Would you like to try updating it again?`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .reprompt(speechText)
-                .getResponse();
-        }
-
-        // Update content status
-        const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);
-
-        if (!updateResult) {
-            // Update failed
-            const speechText = `There was a problem updating the status of your content. Please try again later.`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .getResponse();
-        }
-
-        // Update successful
-        const speechText = `Your content "${queryContentSlot}" has been successfully updated to the status "${currentStatusTrack}".`;
-        return handlerInput.responseBuilder
-            .speak(speechText)
-            .getResponse();
-    }
-}
 
 const ChooseContentHandler = {
     canHandle(handlerInput) {

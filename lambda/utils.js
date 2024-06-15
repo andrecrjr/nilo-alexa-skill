@@ -36,6 +36,13 @@ const updateDynamicEntityUserContentQuery = (userContents) => {
     };
 };
 
+const respondWithReprompt = (handlerInput, speechText, repromptText) => {
+    return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(repromptText)
+        .getResponse();
+};
+
 function wordToNumber(text) {
     const units = {
         'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
@@ -74,8 +81,16 @@ function wordToNumber(text) {
     return convertedWords.join(' ');
 }
 
+const respond = (handlerInput, speechText) => {
+    return handlerInput.responseBuilder
+        .speak(speechText)
+        .getResponse();
+};
+
 module.exports = {
     updateDynamicEntitiesStatusTrack,
     updateDynamicEntityUserContentQuery,
-    wordToNumber
+    wordToNumber,
+    respond,
+    respondWithReprompt
 }
