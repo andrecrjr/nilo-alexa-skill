@@ -30,6 +30,13 @@ const StatusUpdateContentIntentHandler = {
                     `Please try to add or update another content!`)
             }
 
+            if (data.length === 0 && data.currentStatusTrack === currentStatusTrack) {
+                // Content found with existing status, inform user and offer to try again
+                const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
+            Would you like to try updating it again?`;
+                return respondWithReprompt(handlerInput, speechText)
+            }
+
             if (data.length > 1) {
                 return promptUserToSelectContent(handlerInput, data, queryContentSlot, currentStatusTrack);
             }
@@ -41,12 +48,6 @@ const StatusUpdateContentIntentHandler = {
                 return respond(handlerInput, speechText)
             }
 
-            if (statusUser === currentStatusTrack) {
-                // Content found with existing status, inform user and offer to try again
-                const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
-            Would you like to try updating it again?`;
-                return respondWithReprompt(handlerInput, speechText)
-            }
 
             // Update content status
             const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);
