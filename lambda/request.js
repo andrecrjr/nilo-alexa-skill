@@ -24,6 +24,20 @@ const getDynamicStatusSlotHistory = async (accessToken) => {
     }
 }
 
+const getSearchContentInUser = async (accessToken, query = "") => {
+    try {
+        const { data } = await apiBase.get(`/collection/search?q=${query}`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+        return data
+    } catch (error) {
+        console.log("error", error)
+        throw new Error("Problem to find content")
+    }
+}
+
 const getSearchContentInUserCollection = async (accessToken, query = "", status = "") => {
     try {
         const { data } = await apiBase.get(`/collection/alexa/search?q=${query}&status=${status}`, {
@@ -62,5 +76,6 @@ module.exports = {
     getUserAuth,
     getDynamicStatusSlotHistory,
     getSearchContentInUserCollection,
-    updateTrackingStatus
+    updateTrackingStatus,
+    getSearchContentInUser
 }

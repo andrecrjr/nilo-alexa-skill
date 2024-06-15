@@ -4,8 +4,8 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const { getUserAuth, getDynamicStatusSlotHistory, updateTrackingStatus } = require('./request');
-const { updateDynamicEntitiesStatusTrack, respond } = require('./utils');
+const { getUserAuth, getDynamicStatusSlotHistory, updateTrackingStatus, getSearchContentInUser } = require('./request');
+const { updateDynamicEntitiesStatusTrack, respond, updateDynamicEntityUserContentQuery } = require('./utils');
 const { StatusUpdateContentIntentHandler } = require('./updateIntents/statusUpdateContent');
 
 const LaunchRequestHandler = {
@@ -17,7 +17,14 @@ const LaunchRequestHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
         const newSlotsFromService = await getDynamicStatusSlotHistory(token);
+        const titleSlotsFromCollection = await getSearchContentInUser(token)
         const dynamicStatusTracker = updateDynamicEntitiesStatusTrack(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat())
+
+        const dynamicContentCollection = updateDynamicEntityUserContentQuery(titleSlotsFromCollection.map((item) => ({
+            id: item.content.id,
+            name: item.content.title
+        })))
+
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = { ...userData };
 
@@ -26,7 +33,7 @@ const LaunchRequestHandler = {
         I'm here to assist you in keeping track of your entertainment contents. What would you like to update today?`;
         const speakReprompt = `For example, you can say "Update Dune to Watched", or "I'm reading One Piece vol 40".`
 
-        return handlerInput.responseBuilder.addDirective(dynamicStatusTracker)
+        return handlerInput.responseBuilder.addDirective(dynamicStatusTracker).addDirective(dynamicContentCollection)
             .speak(speakOutput)
             .reprompt(speakReprompt)
             .getResponse();
