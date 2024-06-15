@@ -1,5 +1,37 @@
 {
   "interactionModel": {
+    "dialog": {
+      "intents": [
+        {
+          "slots": [
+            {
+              "name": "ItemNumber",
+              "elicitationRequired": false,
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "search",
+              "elicitationRequired": false,
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1523209151531.1556522314790.1095080289002"
+                }
+              ],
+              "type": "SearchCustom",
+              "confirmationRequired": false,
+              "prompts": {}
+            }
+          ],
+          "name": "ChooseContentIntent",
+          "confirmationRequired": false,
+          "prompts": {}
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
     "languageModel": {
       "intents": [
         {
@@ -45,16 +77,15 @@
             {
               "name": "ItemNumber",
               "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "search",
+              "type": "SearchCustom"
             }
           ],
           "name": "ChooseContentIntent",
           "samples": [
-            "Search {ItemNumber}",
-            "Search number {ItemNumber}",
-            "Content {ItemNumber}",
-            "Number content {ItemNumber}",
-            "Content number {ItemNumber}",
-            "Number {ItemNumber}"
+            "{search} {ItemNumber}"
           ]
         }
       ],
@@ -97,9 +128,61 @@
             }
           ],
           "name": "ContentQuery"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "synonyms": [
+                  "seeking",
+                  "content number",
+                  "search number",
+                  "search",
+                  "content"
+                ],
+                "value": "number"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "finding",
+                  "content number",
+                  "search number",
+                  "search",
+                  "number"
+                ],
+                "value": "content"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "searching",
+                  "seek number",
+                  "find number",
+                  "content",
+                  "number"
+                ],
+                "value": "search"
+              }
+            }
+          ],
+          "name": "SearchCustom"
         }
       ],
       "invocationName": "xandria"
-    }
+    },
+    "prompts": [
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Just say \u0027search\u0027 or \u0027find\u0027 and the number of the content"
+          }
+        ],
+        "id": "Slot.Validation.1523209151531.1556522314790.1095080289002"
+      }
+    ]
   }
 }
