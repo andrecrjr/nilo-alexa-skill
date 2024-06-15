@@ -1,4 +1,4 @@
-const updateDynamicEntitiesStatusTrack = (statusHistory) => {
+const updateDynamicEntitiesStatusTrack = (statusHistory, userContents) => {
     return {
         type: 'Dialog.UpdateDynamicEntities',
         updateBehavior: 'REPLACE',
