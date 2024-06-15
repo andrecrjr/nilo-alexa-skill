@@ -1,38 +1,7 @@
 {
   "interactionModel": {
-    "dialog": {
-      "intents": [
-        {
-          "slots": [
-            {
-              "name": "ItemNumber",
-              "elicitationRequired": false,
-              "type": "AMAZON.NUMBER",
-              "confirmationRequired": false,
-              "prompts": {}
-            },
-            {
-              "name": "search",
-              "elicitationRequired": false,
-              "validations": [
-                {
-                  "type": "hasEntityResolutionMatch",
-                  "prompt": "Slot.Validation.1523209151531.1556522314790.1095080289002"
-                }
-              ],
-              "type": "SearchCustom",
-              "confirmationRequired": false,
-              "prompts": {}
-            }
-          ],
-          "name": "ChooseContentIntent",
-          "confirmationRequired": false,
-          "prompts": {}
-        }
-      ],
-      "delegationStrategy": "ALWAYS"
-    },
     "languageModel": {
+      "invocationName": "ni lo",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -51,28 +20,35 @@
           "samples": []
         },
         {
+          "name": "StatusUpdateContent",
           "slots": [
             {
               "name": "status",
               "type": "StatusTrack"
             },
             {
-              "name": "QueryContent",
+              "name": "ContentTitle",
               "type": "ContentQuery"
             }
           ],
-          "name": "StatusUpdateContent",
           "samples": [
-            "i had {status} {QueryContent}",
-            "i am {status} {QueryContent}",
-            "i have {status} {QueryContent}",
-            "update  {status} for  {QueryContent}",
-            "i {status} {QueryContent}",
-            "update {QueryContent} {status}",
-            "update {QueryContent} to {status}"
+            "mark {ContentTitle} as {status}",
+            "switch {ContentTitle} to {status}",
+            "change my status of {ContentTitle} to {status}",
+            "i've just {status} {ContentTitle}",
+            "update my status of {ContentTitle} to {status}",
+            "my status for {ContentTitle} is now {status}",
+            "i had {status} {ContentTitle}",
+            "i am {status} {ContentTitle}",
+            "i have {status} {ContentTitle}",
+            "update  {status} for  {ContentTitle}",
+            "i'm {status} {ContentTitle}",
+            "update {ContentTitle} {status}",
+            "update {ContentTitle} to {status}"
           ]
         },
         {
+          "name": "ChooseContentIntent",
           "slots": [
             {
               "name": "ItemNumber",
@@ -83,7 +59,6 @@
               "type": "SearchCustom"
             }
           ],
-          "name": "ChooseContentIntent",
           "samples": [
             "{search} {ItemNumber}"
           ]
@@ -91,78 +66,109 @@
       ],
       "types": [
         {
+          "name": "StatusTrack",
           "values": [
             {
               "name": {
                 "value": "read"
               }
             }
-          ],
-          "name": "StatusTrack"
+          ]
         },
         {
+          "name": "ContentQuery",
           "values": [
             {
               "name": {
                 "value": "contentGeneric"
               }
             }
-          ],
-          "name": "ContentQuery"
+          ]
         },
         {
+          "name": "SearchCustom",
           "values": [
             {
               "name": {
+                "value": "number",
                 "synonyms": [
                   "seeking",
                   "content number",
                   "search number",
                   "search",
                   "content"
-                ],
-                "value": "number"
+                ]
               }
             },
             {
               "name": {
+                "value": "content",
                 "synonyms": [
                   "finding",
                   "content number",
                   "search number",
                   "search",
                   "number"
-                ],
-                "value": "content"
+                ]
               }
             },
             {
               "name": {
+                "value": "search",
                 "synonyms": [
                   "searching",
                   "seek number",
                   "find number",
                   "content",
                   "number"
-                ],
-                "value": "search"
+                ]
               }
             }
-          ],
-          "name": "SearchCustom"
+          ]
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "ChooseContentIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "ItemNumber",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "search",
+              "type": "SearchCustom",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1523209151531.1556522314790.1095080289002"
+                }
+              ]
+            }
+          ]
         }
       ],
-      "invocationName": "xandria"
+      "delegationStrategy": "ALWAYS"
     },
     "prompts": [
       {
+        "id": "Slot.Validation.1523209151531.1556522314790.1095080289002",
         "variations": [
           {
             "type": "PlainText",
-            "value": "Just say \u0027search\u0027 or \u0027find\u0027 and the number of the content"
+            "value": "Just say 'search' or 'find' and the number of the content"
           }
-        ],
-        "id": "Slot.Validation.1523209151531.1556522314790.1095080289002"
+        ]
       }
     ]
   }
