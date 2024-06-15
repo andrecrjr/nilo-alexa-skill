@@ -27,9 +27,9 @@ const LaunchRequestHandler = {
         sessionAttributes.userData = { ...userData };
 
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-        const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
+        const speakOutput = `Welcome to Nilo Content Tracker, ${userData.username}! 
         I'm here to assist you in keeping track of your entertainment contents. What would you like to update today?`;
-        const speakReprompt = `For example, you can say "Update Dune to Watched", or "I'm reading One Piece vol 40".`
+        const speakReprompt = `For example, you can say "Update Dune to Watched", or "I'm reading One Piece".`
 
         return handlerInput.responseBuilder.addDirective(dynamicSlots)
             .speak(speakOutput)
