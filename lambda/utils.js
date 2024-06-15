@@ -12,16 +12,7 @@ const updateDynamicEntitiesStatusTrack = (statusHistory) => {
                         synonyms: []
                     }
                 }))
-            }
-        ]
-    };
-};
-
-const updateDynamicEntityUserContentQuery = (userContents) => {
-    return {
-        type: 'Dialog.UpdateDynamicEntities',
-        updateBehavior: 'REPLACE',
-        types: [
+            },
             {
                 name: 'ContentQuery',
                 values: userContents.map(content => ({
@@ -32,6 +23,17 @@ const updateDynamicEntityUserContentQuery = (userContents) => {
                     }
                 }))
             }
+
+        ]
+    };
+};
+
+const updateDynamicEntityUserContentQuery = (userContents) => {
+    return {
+        type: 'Dialog.UpdateDynamicEntities',
+        updateBehavior: 'REPLACE',
+        types: [
+
         ]
     };
 };
