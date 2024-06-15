@@ -15,19 +15,6 @@
           "samples": []
         },
         {
-          "slots": [],
-          "name": "HelloWorldIntent",
-          "samples": [
-            "hello",
-            "how are you",
-            "say hi world",
-            "say hi",
-            "hi",
-            "say hello world",
-            "say hello"
-          ]
-        },
-        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
         },
@@ -44,8 +31,11 @@
           ],
           "name": "StatusUpdateContent",
           "samples": [
+            "i had {status} {QueryContent}",
+            "i am {status} {QueryContent}",
+            "i have {status} {QueryContent}",
+            "update my {QueryContent} to {status}",
             "i {status} {QueryContent}",
-            "i\u0027m {status} {QueryContent} ",
             "update {QueryContent} {status}",
             "update {QueryContent} to {status}"
           ]
@@ -91,6 +81,15 @@
         },
         {
           "values": [
+            {
+              "name": {
+                "synonyms": [
+                  "one piece",
+                  "1 piece"
+                ],
+                "value": "one piece"
+              }
+            },
             {
               "name": {
                 "value": "contentGeneric"
