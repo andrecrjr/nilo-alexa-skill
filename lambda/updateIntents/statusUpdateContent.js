@@ -41,7 +41,7 @@ const StatusUpdateContentIntentHandler = {
                 return promptUserToSelectContent(handlerInput, data, queryContentSlot, currentStatusTrack);
             }
 
-            const { id, currentStatusTrack: statusUser } = data[0]?.content;
+            const { id } = data[0]?.content;
 
             if (!id) {
                 const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
