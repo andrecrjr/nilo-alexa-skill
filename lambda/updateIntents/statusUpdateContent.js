@@ -1,4 +1,6 @@
+const Alexa = require('ask-sdk-core');
 const { respond, respondWithReprompt } = require("../utils");
+const { getSearchContentInUserCollection, updateTrackingStatus } = require('../request');
 
 const StatusUpdateContentIntentHandler = {
 

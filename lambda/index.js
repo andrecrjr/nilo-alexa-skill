@@ -4,8 +4,8 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const { getUserAuth, getDynamicStatusSlotHistory, getSearchContentInUserCollection, updateTrackingStatus } = require('./request');
-const { updateDynamicEntities, updateUserContentQuery, updateDynamicEntitiesStatusTrack, updateDynamicEntityUserContentQuery } = require('./utils');
+const { getUserAuth, getDynamicStatusSlotHistory, updateTrackingStatus } = require('./request');
+const { updateDynamicEntitiesStatusTrack, respond } = require('./utils');
 const { StatusUpdateContentIntentHandler } = require('./updateIntents/statusUpdateContent');
 
 const LaunchRequestHandler = {
@@ -23,8 +23,8 @@ const LaunchRequestHandler = {
 
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Alexandria Content Tracker, ${userData.username}! 
-        I'm here to assist you in keeping track of your books and manga and other contents. What would you like to update today?`;
-        const speakReprompt = `For example, you can say "Update the title of the book to page 45", or "Mark chapter 3 of the manga as read".`
+        I'm here to assist you in keeping track of your entertainment contents. What would you like to update today?`;
+        const speakReprompt = `For example, you can say "Update Dune to Watched", or "I'm reading One Piece vol 40".`
 
         return handlerInput.responseBuilder.addDirective(dynamicStatusTracker)
             .speak(speakOutput)
@@ -50,33 +50,12 @@ const ChooseContentHandler = {
             const chosenItem = searchData.data[index];
             await updateTrackingStatus(token, chosenItem.content.id, searchData.currentStatusTrack)
             const speechText = `${searchData.mode} the item ${chosenItem.content.title} to the status ${searchData.currentStatusTrack}.`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .getResponse();
+            return respond(handlerInput, speechText)
         } else {
             // Respond with an error if the index is invalid
             const speechText = `Sorry, I couldn't find an item with that number. Please try again.`;
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .getResponse();
+            return respond(handlerInput, speechText)
         }
-    }
-};
-
-
-const HelloWorldIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
-    },
-    async handle(handlerInput) {
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        const userData = sessionAttributes.userData || 'ID não encontrado.';
-
-        return handlerInput.responseBuilder
-            .speak(`Olá denovo ${userData.username}`)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse();
     }
 };
 
