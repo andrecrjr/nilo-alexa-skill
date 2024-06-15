@@ -43,7 +43,14 @@ const StatusUpdateContentIntentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'QueryContent');
-        const data = await getSearchContentInUserCollection(token, queryContentSlot);
+
+        if (!currentStatusTrack || !queryContentSlot) {
+            return handlerInput.responseBuilder
+                .speak(`Sorry, I didn't understand what you said. Please try again.`)
+                .reprompt(`Please, try to add or update some content!`)
+                .getResponse();
+        }
+        const data = await getSearchContentInUserCollection(token, queryContentSlot, currentStatusTrack);
 
         if (data.length === 0) {
             return handlerInput.responseBuilder

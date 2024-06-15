@@ -24,9 +24,9 @@ const getDynamicStatusSlotHistory = async (accessToken) => {
     }
 }
 
-const getSearchContentInUserCollection = async (accessToken, query = "") => {
+const getSearchContentInUserCollection = async (accessToken, query = "", status = "") => {
     try {
-        const { data } = await apiBase.get(`/collection/search?q=${query}`, {
+        const { data } = await apiBase.get(`/collection/alexa/search?q=${query}&status=${status}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
