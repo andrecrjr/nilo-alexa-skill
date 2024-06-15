@@ -94,27 +94,7 @@
           "values": [
             {
               "name": {
-                "value": "finished"
-              }
-            },
-            {
-              "name": {
-                "value": "dropped"
-              }
-            },
-            {
-              "name": {
-                "value": "paused"
-              }
-            },
-            {
-              "name": {
                 "value": "read"
-              }
-            },
-            {
-              "name": {
-                "value": "reading"
               }
             }
           ],
