@@ -1,7 +1,7 @@
 'use strict';
 const axios = require("axios")
 
-const apiBase = axios.create({ baseURL: "https://48ef-179-70-50-192.ngrok-free.app" })
+const apiBase = axios.create({ baseURL: "https://c4c4-179-70-50-192.ngrok-free.app" })
 
 const getUserAuth = async (accessToken) => {
     const { data } = await apiBase.get("/users/profile", {
