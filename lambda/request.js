@@ -39,9 +39,9 @@ const getSearchContentInUser = async (accessToken, query = "") => {
     }
 }
 
-const getSearchContentInUserCollection = async (accessToken, query = "", status = "") => {
+const getSearchContentInUserCollection = async (accessToken, query = "", ctype = "") => {
     try {
-        const { data } = await apiBase.get(`/collection/alexa/search?q=${query}&status=${status}`, {
+        const { data } = await apiBase.get(`/collection/alexa/search?q=${query}&contenttype=${ctype}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
