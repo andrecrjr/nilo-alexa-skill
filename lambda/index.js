@@ -28,8 +28,9 @@ const LaunchRequestHandler = {
 
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         const speakOutput = `Welcome to Nilo Content Tracker, ${userData.username}! 
-        I'm here to assist you in keeping track of your entertainment contents. What would you like to update today?`;
-        const speakReprompt = `For example, you can say "Update Dune to Watched", or "I'm reading One Piece".`
+        I'm here to assist you in keeping track of your entertainment contents. 
+        ${titleSlotsFromCollection.length > 0 && "What would you like to update today?"}`;
+        const speakReprompt = titleSlotsFromCollection.length > 0 ? `For example, you can say "Update Dune to Watched", or "I'm reading One Piece".` : "Add your first content"
 
         return handlerInput.responseBuilder.addDirective(dynamicSlots)
             .speak(speakOutput)
@@ -70,7 +71,8 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'You can say hello to me! How can I help?';
+        const speakOutput = 'If you want to add a new content then say';
+        const addOutput = "Find one piece, "
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -174,9 +176,9 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        IntentReflectorHandler,
+        // IntentReflectorHandler,
         StatusUpdateContentIntentHandler,
-        ChooseContentHandler,
+        // ChooseContentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
