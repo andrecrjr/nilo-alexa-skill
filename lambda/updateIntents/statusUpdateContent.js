@@ -13,14 +13,6 @@ const StatusUpdateContentIntentHandler = {
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'genericContent');
-        console.log("LOG currenStatusTrack", currentStatusTrack)
-        console.log("LOG queryContentSlot", queryContentSlot)
-        if (!currentStatusTrack || !queryContentSlot) {
-            return handlerInput.responseBuilder
-                .speak(`Sorry, I didn't understand what you said. Please try again.`)
-                .reprompt(`Please, try to add or update some content!`)
-                .getResponse();
-        }
 
         try {
             const data = await getSearchContentInUserCollection(token, queryContentSlot, currentStatusTrack);
@@ -32,25 +24,19 @@ const StatusUpdateContentIntentHandler = {
                     `Please try to add or update another content!`)
             }
 
-            if (data.length === 0 && data.currentStatusTrack === currentStatusTrack) {
+            if (data[0].currentStatusTrack === currentStatusTrack) {
                 // Content found with existing status, inform user and offer to try again
                 const speechText = `The content "${queryContentSlot}" already has the status "${currentStatusTrack}". 
-            Would you like to try updating it again?`;
+            Would you like to update another content again?`;
                 return respondWithReprompt(handlerInput, speechText)
             }
-
-            // if (data.length > 1) {
-            //     return promptUserToSelectContent(handlerInput, data, queryContentSlot, currentStatusTrack);
-            // }
 
             const { id } = data[0]?.content;
 
             if (!id) {
-                const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try again.`;
+                const speechText = `Sorry, I couldn't find content related to "${queryContentSlot}". Please try add the content to your progress collection.`;
                 return respond(handlerInput, speechText)
             }
-
-
             // Update content status
             const updateResult = await updateTrackingStatus(token, id, currentStatusTrack);
 

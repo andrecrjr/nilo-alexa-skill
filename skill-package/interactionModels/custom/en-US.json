@@ -5,38 +5,13 @@
         {
           "slots": [
             {
-              "name": "ItemNumber",
-              "elicitationRequired": false,
-              "type": "AMAZON.NUMBER",
-              "confirmationRequired": false,
-              "prompts": {}
-            },
-            {
-              "name": "search",
-              "elicitationRequired": false,
-              "validations": [
-                {
-                  "type": "hasEntityResolutionMatch",
-                  "prompt": "Slot.Validation.1523209151531.1556522314790.1095080289002"
-                }
-              ],
-              "type": "SearchCustom",
-              "confirmationRequired": false,
-              "prompts": {}
-            }
-          ],
-          "name": "ChooseContentIntent",
-          "confirmationRequired": false,
-          "prompts": {}
-        },
-        {
-          "slots": [
-            {
               "name": "genericContent",
-              "elicitationRequired": false,
+              "elicitationRequired": true,
               "type": "AMAZON.SearchQuery",
               "confirmationRequired": false,
-              "prompts": {}
+              "prompts": {
+                "elicitation": "Elicit.Slot.1468047279972.1000447350029"
+              }
             },
             {
               "name": "status",
@@ -46,12 +21,46 @@
               "prompts": {
                 "elicitation": "Elicit.Slot.1428663302990.398750475358"
               }
+            },
+            {
+              "name": "page",
+              "elicitationRequired": false,
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "prompts": {}
             }
           ],
           "name": "StatusUpdateContent",
           "confirmationRequired": true,
           "prompts": {
             "confirmation": "Confirm.Intent.1428663302990"
+          }
+        },
+        {
+          "slots": [
+            {
+              "name": "genericContent",
+              "elicitationRequired": true,
+              "type": "AMAZON.SearchQuery",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.378955114873.1650602163172"
+              }
+            },
+            {
+              "name": "contentType",
+              "elicitationRequired": true,
+              "type": "contentTypes",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.378955114873.1407407732825"
+              }
+            }
+          ],
+          "name": "AddContentCollectionTracking",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.378955114873"
           }
         }
       ],
@@ -79,7 +88,14 @@
           "slots": [
             {
               "name": "genericContent",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "change progress to {genericContent}",
+                "I want {genericContent}",
+                "I want to change {genericContent}",
+                "I need {genericContent}",
+                "{genericContent}"
+              ]
             },
             {
               "name": "status",
@@ -87,27 +103,69 @@
               "samples": [
                 "{status}"
               ]
+            },
+            {
+              "name": "page",
+              "type": "AMAZON.NUMBER"
             }
           ],
           "name": "StatusUpdateContent",
           "samples": [
+            "i want to set the status to {status} and update {page} episodes",
+            "i want to set the status to {status} and update {page} pages",
+            "set a new status",
+            "new status",
+            "change status",
+            "update status",
+            "modify {genericContent}",
+            "change {genericContent}",
+            " I want to update {genericContent}",
+            "set status to {status}",
+            "edit {genericContent}",
+            "I want to set the status to  {status}",
+            "I want to set a new status to {genericContent}",
+            "I want to change {genericContent}",
             "Update {genericContent} "
           ]
         },
         {
           "slots": [
             {
-              "name": "ItemNumber",
-              "type": "AMAZON.NUMBER"
+              "name": "genericContent",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "add {genericContent}",
+                "{genericContent}",
+                "Track {genericContent}"
+              ]
             },
             {
-              "name": "search",
-              "type": "SearchCustom"
+              "name": "contentType",
+              "type": "contentTypes",
+              "samples": [
+                "new {contentType}",
+                "a new {contentType}",
+                "a type of {contentType}",
+                "a kind of {contentType}",
+                "{contentType}",
+                "a {contentType}"
+              ]
             }
           ],
-          "name": "ChooseContentIntent",
+          "name": "AddContentCollectionTracking",
           "samples": [
-            "{search} {ItemNumber}"
+            "i want to add {genericContent} to my progress",
+            "i want to add {contentType}",
+            "i\u0027m looking to track {genericContent} ",
+            "add {genericContent} ",
+            "register a new {contentType} for tracking",
+            "include {genericContent} in my collection",
+            "add a {contentType} to my list",
+            "add a new {contentType}",
+            "i want to add a new {contentType}",
+            "add {genericContent}  to my collection",
+            "i want to add {genericContent} to my collection",
+            "i want to add {genericContent}"
           ]
         }
       ],
@@ -257,6 +315,50 @@
           }
         ],
         "id": "Confirm.Intent.1428663302990"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which content would you like to update its progress status to {status} ?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which content would you like to change to {status} ?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which entertainment content would you like to change to {status} ?"
+          }
+        ],
+        "id": "Elicit.Slot.1468047279972.1000447350029"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the {contentType} \u0027s title you want to track, say it all the title with volume  or episode or a single book."
+          }
+        ],
+        "id": "Elicit.Slot.378955114873.1650602163172"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please, say the kind of content you\u0027ll want to add, can be manga, book etc..."
+          }
+        ],
+        "id": "Elicit.Slot.378955114873.1407407732825"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Do you want to add {genericContent} in your progress collection?"
+          }
+        ],
+        "id": "Confirm.Intent.378955114873"
       }
     ]
   }
