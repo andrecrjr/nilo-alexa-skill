@@ -12,7 +12,13 @@ const StatusUpdateContentIntentHandler = {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
+        const episodeOrPage = Alexa.getSlotValue(handlerInput.requestEnvelope, 'episodeOrPage');
+        const episodeOrPageNumber = Alexa.getSlotValue(handlerInput.requestEnvelope, 'episodeOrPageNumber');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'ContentTitle');
+        console.log("LOG currenStatusTrack", currentStatusTrack)
+        console.log("LOG episodeOrPage", episodeOrPage)
+        console.log("LOG episodeOrPageNumber", episodeOrPageNumber)
+        console.log("LOG queryContentSlot", queryContentSlot)
         if (!currentStatusTrack || !queryContentSlot) {
             return handlerInput.responseBuilder
                 .speak(`Sorry, I didn't understand what you said. Please try again.`)
