@@ -28,6 +28,43 @@
           "name": "ChooseContentIntent",
           "confirmationRequired": false,
           "prompts": {}
+        },
+        {
+          "slots": [
+            {
+              "name": "status",
+              "elicitationRequired": true,
+              "type": "StatusTrack",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1428663302990.1092625979533"
+              }
+            },
+            {
+              "name": "ContentTitle",
+              "elicitationRequired": false,
+              "type": "ContentQuery",
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "episodeOrPage",
+              "elicitationRequired": false,
+              "type": "pageOrEpisode",
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "episodeOrPageNumber",
+              "elicitationRequired": false,
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "prompts": {}
+            }
+          ],
+          "name": "StatusUpdateContent",
+          "confirmationRequired": false,
+          "prompts": {}
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -54,7 +91,10 @@
           "slots": [
             {
               "name": "status",
-              "type": "StatusTrack"
+              "type": "StatusTrack",
+              "samples": [
+                "{status}"
+              ]
             },
             {
               "name": "ContentTitle",
@@ -235,6 +275,15 @@
           }
         ],
         "id": "Slot.Validation.1523209151531.1556522314790.1095080289002"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "you need to say the status like reading, completed, watching, etc"
+          }
+        ],
+        "id": "Elicit.Slot.1428663302990.1092625979533"
       }
     ]
   }
