@@ -14,6 +14,15 @@
               }
             },
             {
+              "name": "contentType",
+              "elicitationRequired": true,
+              "type": "contentTypes",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.961923522407.1057190895323"
+              }
+            },
+            {
               "name": "status",
               "elicitationRequired": true,
               "type": "StatusTrack",
@@ -21,13 +30,6 @@
               "prompts": {
                 "elicitation": "Elicit.Slot.1428663302990.398750475358"
               }
-            },
-            {
-              "name": "page",
-              "elicitationRequired": false,
-              "type": "AMAZON.NUMBER",
-              "confirmationRequired": false,
-              "prompts": {}
             }
           ],
           "name": "StatusUpdateContent",
@@ -98,23 +100,27 @@
               ]
             },
             {
+              "name": "contentType",
+              "type": "contentTypes",
+              "samples": [
+                "is an {contentType}",
+                "is a {contentType}",
+                "kind of {contentType}",
+                "{contentType}"
+              ]
+            },
+            {
               "name": "status",
               "type": "StatusTrack",
               "samples": [
                 "{status}"
               ]
-            },
-            {
-              "name": "page",
-              "type": "AMAZON.NUMBER"
             }
           ],
           "name": "StatusUpdateContent",
           "samples": [
-            "i want to set the status to {status} and update {page} episodes",
-            "i want to set the status to {status} and update {page} pages",
+            "change a status for {contentType}",
             "set a new status",
-            "new status",
             "change status",
             "update status",
             "modify {genericContent}",
@@ -311,7 +317,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "Would you like to confirm {genericContent} to {status} ?"
+            "value": "Would you like to confirm {contentType} of{genericContent} to {status} ?"
           }
         ],
         "id": "Confirm.Intent.1428663302990"
@@ -359,6 +365,15 @@
           }
         ],
         "id": "Confirm.Intent.378955114873"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which kind of content is {genericContent} ... Book, manga, magazine, anime?"
+          }
+        ],
+        "id": "Elicit.Slot.961923522407.1057190895323"
       }
     ]
   }
