@@ -11,11 +11,12 @@ const StatusUpdateContentIntentHandler = {
     async handle(handlerInput) {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
+        const contentType = Alexa.getSlotValue(handlerInput.requestEnvelope, 'contentType');
         const currentStatusTrack = Alexa.getSlotValue(handlerInput.requestEnvelope, 'status');
         const queryContentSlot = Alexa.getSlotValue(handlerInput.requestEnvelope, 'genericContent');
 
         try {
-            const data = await getSearchContentInUserCollection(token, queryContentSlot, currentStatusTrack);
+            const data = await getSearchContentInUserCollection(token, queryContentSlot, contentType);
 
             if (data.length === 0) {
                 return respondWithReprompt(handlerInput,
