@@ -21,7 +21,7 @@ const StatusUpdateContentIntentHandler = {
             if (data.length === 0) {
                 return respondWithReprompt(handlerInput,
                     `Sorry, I couldn't find a content called ${queryContentSlot}. 
-                    Maybe you would want to add ${queryContentSlot} to your collection, then say it 'I want to add ${queryContentSlot}'`,
+                    Would you like to try searching for similar content or adding a new one?'`,
                     `Please try to add or update another content!`)
             }
 
