@@ -1,4 +1,4 @@
-const updateDynamicEntitiesStatusTrack = (statusHistory, userContents) => {
+const updateDynamicEntitiesStatusTrack = (statusHistory, contentTypes) => {
     return {
         type: 'Dialog.UpdateDynamicEntities',
         updateBehavior: 'REPLACE',
@@ -14,11 +14,11 @@ const updateDynamicEntitiesStatusTrack = (statusHistory, userContents) => {
                 }))
             },
             {
-                name: 'ContentQuery',
-                values: userContents.map(content => ({
-                    id: content.id,
+                name: 'contentTypes',
+                values: contentTypes.map(content => ({
+                    id: content,
                     name: {
-                        value: content.name,
+                        value: content.toLowerCase(),
                         synonyms: []
                     }
                 }))

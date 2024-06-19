@@ -16,18 +16,15 @@ const LaunchRequestHandler = {
 
         const token = handlerInput.requestEnvelope.context.System.user.accessToken;
         const userData = await getUserAuth(token);
-        const newSlotsFromService = await getDynamicStatusSlotHistory(token);
+        const contentTypeFromService = await getDynamicStatusSlotHistory(token);
         const titleSlotsFromCollection = await getSearchContentInUser(token)
-        const dynamicSlots = updateDynamicEntitiesStatusTrack(newSlotsFromService.map(type => type.statusTracker.statusHistory).flat(),
-            titleSlotsFromCollection.map((item) => ({
-                id: item.content.id,
-                name: item.content.title
-            })))
+        const dynamicSlots = updateDynamicEntitiesStatusTrack(contentTypeFromService.map(type => type.statusTracker.statusHistory).flat(),
+            contentTypeFromService.map(type => type.title))
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.userData = { ...userData };
 
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-        const speakOutput = `Welcome to Nilo Content Tracker, ${userData.username}! 
+        const speakOutput = `Welcome to Nilo Tracker, ${userData.username}! 
         I'm here to assist you in keeping track of your entertainment contents. 
         ${titleSlotsFromCollection.length > 0 && "What would you like to update today?"}`;
         const speakReprompt = titleSlotsFromCollection.length > 0 ? `For example, you can say "Update Dune to Watched", or "I'm reading One Piece".` : "Add your first content"
